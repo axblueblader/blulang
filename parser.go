@@ -46,8 +46,9 @@ func (p *Parser) pop() {
 
 // Order of precedence;
 // Variable declaration
-// Assignment
 // Conditional
+// Loop
+// Assignment
 // Logical
 // Comparison
 // Additive
@@ -72,11 +73,7 @@ func (p *Parser) parseExpression() Expression {
 	if p.peek().name == TkWhile {
 		return p.parseWhileLoopExpression()
 	}
-	next := p.peekNext()
-	if next.name == TkBinaryOperator && next.value == "=" {
-		return p.parseAssignmentExpression()
-	}
-	return p.parseComparisonExpression()
+	return p.parseAssignmentExpression()
 }
 
 func (p *Parser) parseWhileLoopExpression() Expression {
@@ -120,9 +117,12 @@ func (p *Parser) parseCodeBlock(statements []Statement) []Statement {
 }
 
 func (p *Parser) parseAssignmentExpression() Expression {
-	identifier := p.parsePrimaryExpression().(Identifier)
-	p.pop() // pop equal sign
-	return NewBinaryExpression(identifier, p.parseExpression(), "=")
+	expr := p.parseComparisonExpression()
+	if p.peek().value == "=" {
+		p.pop() // pop equal sign
+		return NewBinaryExpression(expr, p.parseExpression(), "=")
+	}
+	return expr
 }
 
 func (p *Parser) parseVariableDeclarationExpression() Expression {
@@ -213,7 +213,6 @@ func (p *Parser) parseComparisonExpression() Expression {
 		leftExp = NewBinaryExpression(leftExp, rightExp, operator)
 		operator = p.peek().value
 	}
-	fmt.Println(leftExp)
 	return leftExp
 }
 

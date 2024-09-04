@@ -145,22 +145,24 @@ func TestWhileLoop(t *testing.T) {
 }
 
 func TestArray(t *testing.T) {
-	scope := main.NewScope(nil)
+	scope := main.NewGlobalScope()
 	parser := main.NewParser()
 	code := `
 	let b = 0
-	let a = [1+1-1, 2, if 1 == 1 {3}, while b != 4 {b=b+1}]
-	let c = 0
+	let a = [1+1-1, 2, if 1 == 1 {3}, while b != 4 {b=b+1}, 0]
+	a[4] = 5
+	a = a + [6]
+	let i = 0
 	let res = 0
-	while c < 4 {
-		res = res + a[c]
-		c = c + 1
+	while i < 6 {
+		res = res + a[i]
+		i = i + 1
 	}
-	res
+	res + count(a)
 	`
 	program := parser.CreateAST(code)
 	result := main.Eval(program, scope)
-	assert.Equal(t, 10, result.Value())
+	assert.Equal(t, 27, result.Value())
 	assert.Equal(t, main.VaIntVal, result.Kind())
 }
 

@@ -22,19 +22,13 @@ func NewScope(parent *Scope) *Scope {
 func NewGlobalScope() *Scope {
 	globalScope := NewScope(nil)
 	globalScope.DeclareVar("true", NewBoolVal(true))
-	globalScope.DeclareVar("false", NewBoolVal(true))
+	globalScope.DeclareVar("false", NewBoolVal(false))
 	globalScope.DeclareVar("đúng", NewBoolVal(true))
-	globalScope.DeclareVar("sai", NewBoolVal(true))
-	printFunc := NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {
-		var values []interface{}
-		for _, v := range args {
-			values = append(values, v.Value())
-		}
-		fmt.Println(values...)
-		return NullVal{}
-	})
-	globalScope.DeclareVar("print", printFunc)
-	globalScope.DeclareVar("in", printFunc)
+	globalScope.DeclareVar("sai", NewBoolVal(false))
+	globalScope.DeclareVar("print", PrintFunc)
+	globalScope.DeclareVar("in", PrintFunc)
+	globalScope.DeclareVar("count", CountFunc)
+	globalScope.DeclareVar("đếm", CountFunc)
 	globalScope.DeclareVar("abs", NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {
 		if args[0].Value().(int) < 0 {
 			return NewIntVal(-args[0].Value().(int))

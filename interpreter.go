@@ -126,13 +126,13 @@ func EvalBinaryExpression(binaryExp BinaryExpression, scope *Scope) RuntimeVal {
 	operator := binaryExp.operator
 	// assignment
 	if operator == "=" {
-		return EvalAssignmentExpression(binaryExp.left.(Identifier), rhs, scope)
+		return EvalAssignmentExpression(binaryExp.left, rhs, scope)
 	}
 	// comparison operator
 	if operator == "==" || operator == "!=" || operator == "<" || operator == ">" || operator == "<=" || operator == ">=" {
 		return EvalComparisonBinaryExpression(lhs, rhs, operator)
 	}
-	// math operator
+	// normal math operator
 	if rhs.Kind() == VaIntVal {
 		if lhs.Kind() == VaIntVal {
 			return EvalIntBinaryExpression(lhs.(IntVal), rhs.(IntVal), operator)
@@ -140,6 +140,20 @@ func EvalBinaryExpression(binaryExp BinaryExpression, scope *Scope) RuntimeVal {
 			return EvalIntBinaryExpression(NewIntVal(0), rhs.(IntVal), operator)
 		}
 	}
+
+	// array math operator
+	if lhs.Kind() == rhs.Kind() && rhs.Kind() == VaArrayVal {
+		return EvalArrayBinaryExpression(lhs.(ArrayVal), rhs.(ArrayVal), operator)
+	}
+	return NullVal{}
+}
+
+func EvalArrayBinaryExpression(lhs ArrayVal, rhs ArrayVal, operator string) RuntimeVal {
+	switch operator {
+	case "+":
+		return NewArrayVal(append(lhs.values, rhs.values...))
+	}
+	log.Panic("Unsupported operator for array: ", operator)
 	return NullVal{}
 }
 
@@ -200,9 +214,20 @@ func EvalFuncDeclareExpression(funcDeclareExpr FuncDeclareExpression, scope *Sco
 	return funcVal
 }
 
-func EvalAssignmentExpression(varName Identifier, varValue RuntimeVal, scope *Scope) RuntimeVal {
-	// create variable in scope
-	scope.AssignVar(varName.name, varValue)
+func EvalAssignmentExpression(expr Expression, varValue RuntimeVal, scope *Scope) RuntimeVal {
+	switch expr.Kind() {
+	case StmtIdentifier:
+		// assign variable in scope
+		scope.AssignVar(expr.(Identifier).name, varValue)
+		return varValue
+	case StmtArrayAccessExpr:
+		arrayAccessExpr := expr.(ArrayAccessExpr)
+		index := Eval(arrayAccessExpr.index, scope).(IntVal)
+		arrayVal := EvalIdentifier(NewIdentifier(arrayAccessExpr.name), scope).(ArrayVal)
+		arrayVal.values[index.value] = varValue
+		return varValue
+	}
+
 	return varValue
 }
 

@@ -7,9 +7,8 @@ import (
 	"strings"
 )
 
-var globalScope = NewGlobalScope()
-
 func main() {
+	var globalScope = NewGlobalScope()
 	if len(os.Args) > 1 {
 		file, err := os.Open(os.Args[1])
 		if err != nil {
