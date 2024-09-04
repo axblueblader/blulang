@@ -1,0 +1,34 @@
+; đây là một bình luận
+
+; 'nếu' là một biểu thức và có thể được gán vào biến
+; ví dụ cho câu điều kiện
+cho a = nếu 10 != 10 {
+    11
+} hay {
+    12
+}
+; dòng lệnh cuối luôn được trả về làm kết quả
+
+cho b = 0
+
+; 'khi' cũng là một biểu thức và có thể được gán vào biến
+; 'c' sẽ bằng 10, 'b' sẽ bằng 10
+; ví dụ cho vòng lặp
+cho c = khi b != 10 {
+    b = b + 1
+}
+
+; ví dụ khai báo hàm thông thường
+hàm hiệu (số1, số2, số3) {
+    số1 - số2 - số3
+}
+
+; ví dụ cho khai báo hàm gán vào biến
+cho tổng = hàm (số1, số2, số3) {
+    số1 + số2 + số3
+}
+
+cho d = tổng(a,b,c)
+in("Chào thế giới")
+in(d) ; kết quả cuối là 32
+d ; trả kết quả dùng để kiểm tra

@@ -1,0 +1,21 @@
+fn fiboEnglish(index) {
+    if index == 0 {
+        0
+    } else if index == 1 {
+        1
+    } else {
+        fiboEnglish(index-2) + fiboEnglish(index-1)
+    }
+}
+hàm fiboViệt(thứ) {
+    nếu thứ == 0 {
+        0
+    } hay nếu thứ == 1 {
+        1
+    } hay {
+        fiboViệt(thứ-2) + fiboViệt(thứ-1)
+    }
+}
+; index 0 1 2 3 4 5 6 7
+; value 0 1 1 2 3 5 8 13
+fiboEnglish(6) + fiboViệt(7) ; 21
