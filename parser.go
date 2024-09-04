@@ -255,6 +255,13 @@ func (p *Parser) parseArrayExpression() Expression {
 	return NewArrayLiteral(values)
 }
 
+func (p *Parser) parseGroupedExpression() Expression {
+	p.pop()
+	expr := p.parseComparisonExpression()
+	p.pop()
+	return expr
+}
+
 func (p *Parser) parsePrimaryExpression() Expression {
 	token := p.peek()
 	switch token.name {
@@ -269,6 +276,8 @@ func (p *Parser) parsePrimaryExpression() Expression {
 		return p.parseIdentifierOrFunctionCallExpression()
 	case TKOpenSquare:
 		return p.parseArrayExpression()
+	case TkOpenRound:
+		return p.parseGroupedExpression()
 	}
 	log.Panicf("Unknown token %v", token)
 	return NullLiteral{}

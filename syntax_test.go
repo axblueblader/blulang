@@ -7,6 +7,18 @@ import (
 	"testing"
 )
 
+func TestMath(t *testing.T) {
+	scope := main.NewScope(nil)
+	parser := main.NewParser()
+	code := `
+	((10+4) * 2 - 3) / ((9-7)*(3-2))
+	`
+	program := parser.CreateAST(code)
+	result := main.Eval(program, scope)
+	assert.Equal(t, 12, result.Value())
+	assert.Equal(t, main.VaIntVal, result.Kind())
+}
+
 func TestVariableDeclaration(t *testing.T) {
 	scope := main.NewScope(nil)
 	parser := main.NewParser()
