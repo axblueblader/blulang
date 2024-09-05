@@ -29,6 +29,8 @@ func NewGlobalScope() *Scope {
 	globalScope.DeclareVar("in", PrintFunc)
 	globalScope.DeclareVar("count", CountFunc)
 	globalScope.DeclareVar("đếm", CountFunc)
+	globalScope.DeclareVar("input", InputFunc)
+	globalScope.DeclareVar("nhập", InputFunc)
 	globalScope.DeclareVar("abs", NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {
 		if args[0].Value().(int) < 0 {
 			return NewIntVal(-args[0].Value().(int))

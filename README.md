@@ -51,9 +51,11 @@ d ; returned result for testing
 | Looping statement     | while 1 == 1 {}                   |
 | Function declaration  | fn function(arg1,arg2) {}         |
 | Printing              | print("ok")                       |
+| Reading user input    | let a = input()                   |
 | Return statement      | last statement is always returned |
 | Array declaration     | let arr = [1,2,3]                 |
 | Array usage           | arr[2] = 3, arr = arr + [4]       |
+| Array element count   | count(arr)                        |
 
 ## Run
 

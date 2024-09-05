@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
 
 var PrintFunc = NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {
 	var values []interface{}
@@ -9,6 +15,16 @@ var PrintFunc = NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeV
 	}
 	fmt.Println(values...)
 	return NullVal{}
+})
+var InputFunc = NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {
+	reader := bufio.NewReader(os.Stdin)
+	text, _ := reader.ReadString('\n')
+	text = strings.TrimSpace(text)
+	intVal, err := strconv.Atoi(text)
+	if err == nil {
+		return NewIntVal(intVal)
+	}
+	return NewStringVal(text)
 })
 
 var CountFunc = NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {

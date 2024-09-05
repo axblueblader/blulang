@@ -34,6 +34,7 @@ func main() {
 		line := ""
 		for line != "exit()" {
 			fmt.Print("> ")
+			scanner.Scan()
 			line = scanner.Text()
 			parser := NewParser()
 			ast := parser.CreateAST(line)
