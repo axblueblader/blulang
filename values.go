@@ -46,6 +46,9 @@ func NewBoolVal(value bool) BoolVal {
 	return BoolVal{value: value}
 }
 
+var TrueVal = NewBoolVal(true)
+var FalseVal = NewBoolVal(false)
+
 type NullVal struct {
 }
 

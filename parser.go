@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 )
@@ -17,7 +16,6 @@ func NewParser() Parser {
 }
 func (p *Parser) CreateAST(source string) Program {
 	tokens := Tokenize(source)
-	fmt.Println(tokens)
 	p.tokens = tokens
 	program := NewProgram()
 
@@ -78,7 +76,7 @@ func (p *Parser) parseExpression() Expression {
 
 func (p *Parser) parseWhileLoopExpression() Expression {
 	p.pop() // pop 'if'
-	conditionExpr := p.parseComparisonExpression()
+	conditionExpr := p.parseLogicalExpression()
 
 	var statements []Statement
 	statements = p.parseCodeBlock(statements)
@@ -87,7 +85,7 @@ func (p *Parser) parseWhileLoopExpression() Expression {
 
 func (p *Parser) parseConditionalExpression() Expression {
 	p.pop() // pop 'if'
-	conditionExpr := p.parseComparisonExpression()
+	conditionExpr := p.parseLogicalExpression()
 
 	var trueBodyStatements []Statement
 	trueBodyStatements = p.parseCodeBlock(trueBodyStatements)
@@ -117,7 +115,7 @@ func (p *Parser) parseCodeBlock(statements []Statement) []Statement {
 }
 
 func (p *Parser) parseAssignmentExpression() Expression {
-	expr := p.parseComparisonExpression()
+	expr := p.parseLogicalExpression()
 	if p.peek().value == "=" {
 		p.pop() // pop equal sign
 		return NewBinaryExpression(expr, p.parseExpression(), "=")
@@ -204,6 +202,18 @@ func (p *Parser) parseIdentifierOrFunctionCallExpression() Expression {
 	return NewIdentifier(identifierName)
 }
 
+func (p *Parser) parseLogicalExpression() Expression {
+	leftExp := p.parseComparisonExpression()
+	operator := p.peek().value
+	for operator == "&&" || operator == "||" {
+		p.pop()
+		rightExp := p.parseExpression()
+		leftExp = NewBinaryExpression(leftExp, rightExp, operator)
+		operator = p.peek().value
+	}
+	return leftExp
+}
+
 func (p *Parser) parseComparisonExpression() Expression {
 	leftExp := p.parseAdditiveExpression()
 	operator := p.peek().value
@@ -257,9 +267,15 @@ func (p *Parser) parseArrayExpression() Expression {
 
 func (p *Parser) parseGroupedExpression() Expression {
 	p.pop()
-	expr := p.parseComparisonExpression()
+	expr := p.parseLogicalExpression()
 	p.pop()
 	return expr
+}
+
+func (p *Parser) parseNotExpression() Expression {
+	p.pop() // pop !
+	expression := p.parseExpression()
+	return NewBinaryExpression(expression, NewIdentifier("true"), "!=")
 }
 
 func (p *Parser) parsePrimaryExpression() Expression {
@@ -272,13 +288,16 @@ func (p *Parser) parsePrimaryExpression() Expression {
 	case TkString:
 		p.pop()
 		return NewStringLiteral(token.value)
+	case TkNot:
+		return p.parseNotExpression()
 	case TkIdentifier:
 		return p.parseIdentifierOrFunctionCallExpression()
 	case TKOpenSquare:
 		return p.parseArrayExpression()
 	case TkOpenRound:
 		return p.parseGroupedExpression()
+	default:
+		log.Panicf("Unknown token %v", token)
 	}
-	log.Panicf("Unknown token %v", token)
 	return NullLiteral{}
 }

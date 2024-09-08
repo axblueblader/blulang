@@ -69,6 +69,39 @@ func TestComparisonExpression(t *testing.T) {
 	}
 }
 
+func TestLogicalExpression(t *testing.T) {
+	scope := main.NewGlobalScope()
+	parser := main.NewParser()
+	sources := []string{
+		"(4 < 3) || (3 < 4)",
+		"(1 == 1) && (1 != 2)",
+		"true",
+		"true == true",
+		"!false",
+		"!(1 != 1)",
+	}
+	for _, code := range sources {
+		program := parser.CreateAST(code)
+		result := main.Eval(program, scope)
+		assert.Equalf(t, true, result.Value(), "%v", program)
+		assert.Equal(t, main.VaBoolVal, result.Kind())
+	}
+	falseSources := []string{
+		"(4 < 3) || (5 < 4)",
+		"(1 == 1) && (2 != 2)",
+		"false",
+		"false != false",
+		"!true",
+		"!(1 == 1)",
+	}
+	for _, code := range falseSources {
+		program := parser.CreateAST(code)
+		result := main.Eval(program, scope)
+		assert.Equalf(t, false, result.Value(), "%v", program)
+		assert.Equal(t, main.VaBoolVal, result.Kind())
+	}
+}
+
 func TestFunctionDeclareAndCall(t *testing.T) {
 	scope := main.NewScope(nil)
 	parser := main.NewParser()

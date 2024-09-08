@@ -23,6 +23,7 @@ const (
 	TkWhile
 	TkComma
 	TkDot
+	TkNot
 	TkOpenRound
 	TkCloseRound
 	TkOpenCurly
@@ -81,6 +82,12 @@ func isTwoCharBinaryOperator(first rune, second rune) bool {
 	if first == '<' && second == '=' {
 		return true
 	}
+	if first == '&' && second == '&' {
+		return true
+	}
+	if first == '|' && second == '|' {
+		return true
+	}
 	return false
 }
 
@@ -90,6 +97,12 @@ func Tokenize(source string) []Token {
 	for i := 0; i < len(runeArr); i++ {
 		ch := runeArr[i]
 		if isIgnored(ch) {
+			continue
+		}
+
+		if i+1 < len(runeArr) && isTwoCharBinaryOperator(ch, runeArr[i+1]) {
+			tokens = append(tokens, NewToken(TkBinaryOperator, string(ch)+string(runeArr[i+1])))
+			i++
 			continue
 		}
 
@@ -145,10 +158,8 @@ func Tokenize(source string) []Token {
 			tokens = append(tokens, NewToken(TkString, str))
 			continue
 		}
-
-		if i+1 < len(runeArr) && isTwoCharBinaryOperator(ch, runeArr[i+1]) {
-			tokens = append(tokens, NewToken(TkBinaryOperator, string(ch)+string(runeArr[i+1])))
-			i++
+		if ch == '!' {
+			tokens = append(tokens, NewToken(TkNot, string(ch)))
 			continue
 		}
 

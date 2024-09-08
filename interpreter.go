@@ -128,6 +128,9 @@ func EvalBinaryExpression(binaryExp BinaryExpression, scope *Scope) RuntimeVal {
 	if operator == "=" {
 		return EvalAssignmentExpression(binaryExp.left, rhs, scope)
 	}
+	if operator == "||" || operator == "&&" {
+		return EvalLogicalBinaryExpression(lhs, rhs, operator)
+	}
 	// comparison operator
 	if operator == "==" || operator == "!=" || operator == "<" || operator == ">" || operator == "<=" || operator == ">=" {
 		return EvalComparisonBinaryExpression(lhs, rhs, operator)
@@ -148,6 +151,24 @@ func EvalBinaryExpression(binaryExp BinaryExpression, scope *Scope) RuntimeVal {
 	return NullVal{}
 }
 
+func EvalLogicalBinaryExpression(lhs RuntimeVal, rhs RuntimeVal, operator string) RuntimeVal {
+	switch operator {
+	case "||":
+		if lhs.Value() == true || rhs.Value() == true {
+			return TrueVal
+		} else {
+			return FalseVal
+		}
+	case "&&":
+		if lhs.Value() == true && rhs.Value() == true {
+			return TrueVal
+		} else {
+			return FalseVal
+		}
+	}
+	return NullVal{}
+}
+
 func EvalArrayBinaryExpression(lhs ArrayVal, rhs ArrayVal, operator string) RuntimeVal {
 	switch operator {
 	case "+":
@@ -162,14 +183,14 @@ func EvalComparisonBinaryExpression(lhs RuntimeVal, rhs RuntimeVal, operator str
 		if lhs.Kind() == rhs.Kind() {
 			return NewBoolVal(lhs.Value() == rhs.Value())
 		} else {
-			return NewBoolVal(false)
+			return FalseVal
 		}
 	}
 	if operator == "!=" {
 		if lhs.Kind() == rhs.Kind() {
 			return NewBoolVal(lhs.Value() != rhs.Value())
 		} else {
-			return NewBoolVal(true)
+			return TrueVal
 		}
 	}
 	if lhs.Kind() == rhs.Kind() && lhs.Kind() == VaIntVal {
