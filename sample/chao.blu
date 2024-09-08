@@ -7,7 +7,7 @@ cho a = nếu 10 != 10 {
 } hay {
     12
 }
-; dòng lệnh cuối luôn được trả về làm kết quả
+; 'a' giờ có giá trị '12' vì dòng lệnh cuối luôn được trả về làm kết quả
 
 cho b = 0
 

@@ -7,7 +7,7 @@ let a = if 10 != 10 {
 } else {
     12
 }
-; the last statement is always returned as a value
+; 'a' is now '12' because the last statement is always returned as a value
 
 let b = 0
 
