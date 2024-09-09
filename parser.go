@@ -288,6 +288,12 @@ func (p *Parser) parsePrimaryExpression() Expression {
 	case TkString:
 		p.pop()
 		return NewStringLiteral(token.value)
+	case TkBreak:
+		p.pop()
+		return NewBreakStatement()
+	case TkReturn:
+		p.pop()
+		return NewReturnStatement()
 	case TkNot:
 		return p.parseNotExpression()
 	case TkIdentifier:

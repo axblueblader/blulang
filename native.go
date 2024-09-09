@@ -14,7 +14,7 @@ var PrintFunc = NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeV
 		values = append(values, v.Value())
 	}
 	fmt.Println(values...)
-	return NullVal{}
+	return NewArrayVal(args)
 })
 var InputFunc = NewNativeFuncVal(func(scope *Scope, args ...RuntimeVal) RuntimeVal {
 	reader := bufio.NewReader(os.Stdin)

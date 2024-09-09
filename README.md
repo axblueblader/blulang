@@ -39,23 +39,62 @@ print("Hello world")
 print(d) ; final result is 32
 d ; returned result for testing
 ```
-
+- Vietnamese example calculating the Fibonacci number:
+```
+hàm fiboViệt(trỏ) {
+    nếu trỏ == 0 {
+        0
+    } hay nếu trỏ = 1 {
+        1
+    } hay {
+        fiboViệt(trỏ-2) + fiboViệt(trỏ-1)
+    }
+}
+; vị trí  0 1 2 3 4 5 6 7
+; giá trị 0 1 1 2 3 5 8 13
+; 8 + 13
+in(fiboEnglish(6) + fiboViệt(7)) ; kết quả là 21
+```
 - More examples in [sample folder](/sample)
 
 ## Syntax
 
-| Construct             | Syntax                            |
-|-----------------------|-----------------------------------|
-| Variable declaration  | let a = 10                        |
-| Conditional statement | if 1 == 1 {} else {}              |
-| Looping statement     | while 1 == 1 {}                   |
-| Function declaration  | fn function(arg1,arg2) {}         |
-| Printing              | print("ok")                       |
-| Reading user input    | let a = input()                   |
-| Return statement      | last statement is always returned |
-| Array declaration     | let arr = [1,2,3]                 |
-| Array usage           | arr[2] = 3, arr = arr + [4]       |
-| Array element count   | count(arr)                        |
+| Construct             | Syntax                                                                                              |
+|-----------------------|-----------------------------------------------------------------------------------------------------|
+| Variable declaration  | let a = 10                                                                                          |
+| Conditional statement | if 1 == 1 { print("ok") } else { print("what?") }                                                   |
+| Looping statement     | while 1 == 1 { print("forever") }                                                                   |
+| Function declaration  | fn add(arg1,arg2) { arg1 + arg2}                                                                    |
+| Printing              | print("ok")                                                                                         |
+| Reading user input    | let a = input()                                                                                     |
+| Return statement      | fn inc(a) { while a<100 {if a == 50 {a return}} }<br/>last value before 'return' is always returned |
+| Break statement       | while 1 == 1 { if a=3 {break} }<br/>last value before 'break' is returned                           |
+| Array declaration     | let arr = [1,2,3]                                                                                   |
+| Array usage           | arr[2] = 3, arr = arr + [4]                                                                         |
+| Array element count   | count(arr)                                                                                          |
+| Comment               | from ';' to end of line e.g ```; this is a comment```                                               |
+
+**Important note** is that all construct returns the last statement's value so these syntax are allowed
+```
+let value1 = if 1+1 == 2 {
+    1
+} else {
+    2
+}
+; value1 is now 1
+
+let start = 0
+let sum = while start < 3 {
+    start = start + 1
+}
+; result will be sum = start = 3
+
+let multiply2 = fn (a) {
+    a*2
+}   
+; no need explicit return statement in function
+```
+
 
 ## Run
 

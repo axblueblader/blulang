@@ -59,20 +59,26 @@ func EvalProgram(program Program, scope *Scope) RuntimeVal {
 	return lastValue
 }
 
+func EvalConditionalBody(body []Statement, scope *Scope) RuntimeVal {
+	var lastValue RuntimeVal = NullVal{}
+	for _, statement := range body {
+		if statement.Kind() == StmtBreak {
+			return NewBreakVal(lastValue)
+		}
+		if statement.Kind() == StmtReturn {
+			return NewReturnVal(lastValue)
+		}
+		lastValue = Eval(statement, scope)
+	}
+	return lastValue
+}
 func EvalConditionalExpression(conditionStatement ConditionalExpression, scope *Scope) RuntimeVal {
 	conditionResult := Eval(conditionStatement.condition, scope)
 	bodyScope := NewScope(scope)
-	var lastValue RuntimeVal = NullVal{}
 	if conditionResult.Value() == true {
-		for _, statement := range conditionStatement.trueBody {
-			lastValue = Eval(statement, bodyScope)
-		}
-		return lastValue
+		return EvalConditionalBody(conditionStatement.trueBody, bodyScope)
 	} else {
-		for _, statement := range conditionStatement.falseBody {
-			lastValue = Eval(statement, bodyScope)
-		}
-		return lastValue
+		return EvalConditionalBody(conditionStatement.falseBody, bodyScope)
 	}
 }
 
@@ -83,6 +89,14 @@ func EvalWhileLoopExpression(expression WhileLoopExpression, scope *Scope) Runti
 	for conditionResult.Value() == true {
 		for _, statement := range expression.body {
 			lastValue = Eval(statement, bodyScope)
+			if lastValue.Kind() == VaBreakVal {
+				// return the actual value
+				return lastValue.(BreakVal).lastValue
+			}
+			if lastValue.Kind() == VaReturnVal {
+				// return the flow control val
+				return lastValue
+			}
 		}
 		conditionResult = Eval(expression.condition, scope)
 	}
@@ -116,6 +130,10 @@ func EvalUserFuncCallExpression(functionVal FunctionVal, argExpressions []Expres
 	}
 	for _, statement := range functionVal.body {
 		lastValue = Eval(statement, funcScope)
+		if lastValue.Kind() == VaReturnVal {
+			// return the actual value
+			return lastValue.(ReturnVal).lastValue
+		}
 	}
 	return lastValue
 }

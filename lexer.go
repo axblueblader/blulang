@@ -21,6 +21,8 @@ const (
 	TkIf
 	TkElse
 	TkWhile
+	TkReturn
+	TkBreak
 	TkComma
 	TkDot
 	TkNot
@@ -33,16 +35,20 @@ const (
 )
 
 var Keywords = map[string]TokenType{
-	"let":   TkDeclareVar,
-	"cho":   TkDeclareVar,
-	"fn":    TkDeclareFunc,
-	"hàm":   TkDeclareFunc,
-	"if":    TkIf,
-	"nếu":   TkIf,
-	"else":  TkElse,
-	"hay":   TkElse,
-	"while": TkWhile,
-	"khi":   TkWhile,
+	"let":    TkDeclareVar,
+	"cho":    TkDeclareVar,
+	"fn":     TkDeclareFunc,
+	"hàm":    TkDeclareFunc,
+	"if":     TkIf,
+	"nếu":    TkIf,
+	"else":   TkElse,
+	"hay":    TkElse,
+	"while":  TkWhile,
+	"khi":    TkWhile,
+	"return": TkReturn,
+	"trả":    TkReturn,
+	"break":  TkBreak,
+	"nghỉ":   TkBreak,
 }
 
 func NewToken(name TokenType, value string) Token {

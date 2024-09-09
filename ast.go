@@ -14,6 +14,8 @@ const (
 	StmtIdentifier      StmtType = "Identifier"
 	StmtConditionalExpr StmtType = "ConditionalExpr"
 	StmtWhileLoopExpr   StmtType = "WhileLoopExpr"
+	StmtBreak           StmtType = "BreakStmt"
+	StmtReturn          StmtType = "ReturnStmt"
 	StmtArrayLiteral    StmtType = "ArrayLiteral"
 	StmtArrayAccessExpr StmtType = "ArrayAccessExpr"
 )
@@ -55,6 +57,18 @@ func NewWhileLoopExpression(condition Expression, body []Statement) WhileLoopExp
 		body:      body,
 	}
 }
+
+type BreakStatement struct{}
+
+func (s BreakStatement) Kind() StmtType { return StmtBreak }
+
+func NewBreakStatement() BreakStatement { return BreakStatement{} }
+
+type ReturnStatement struct{}
+
+func (s ReturnStatement) Kind() StmtType { return StmtReturn }
+
+func NewReturnStatement() ReturnStatement { return ReturnStatement{} }
 
 type ConditionalExpression struct {
 	condition Expression

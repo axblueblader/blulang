@@ -10,6 +10,8 @@ const (
 	VaArrayVal      ValueType = "ArrayVal"
 	VaFuncVal       ValueType = "FuncVal"
 	VaNativeFuncVal ValueType = "NativeFuncVal"
+	VaBreakVal      ValueType = "BreakVal"
+	VaReturnVal     ValueType = "ReturnVal"
 )
 
 type RuntimeVal interface {
@@ -128,4 +130,34 @@ func (v NativeFuncVal) Invoke(scope *Scope, args ...RuntimeVal) RuntimeVal {
 
 func NewNativeFuncVal(call NativeFunc) NativeFuncVal {
 	return NativeFuncVal{call: call}
+}
+
+type BreakVal struct {
+	lastValue RuntimeVal
+}
+
+func (v BreakVal) Kind() ValueType {
+	return VaBreakVal
+}
+
+func (v BreakVal) Value() any {
+	return v.lastValue
+}
+func NewBreakVal(lastValue RuntimeVal) BreakVal {
+	return BreakVal{lastValue: lastValue}
+}
+
+type ReturnVal struct {
+	lastValue RuntimeVal
+}
+
+func (v ReturnVal) Kind() ValueType {
+	return VaReturnVal
+}
+
+func (v ReturnVal) Value() any {
+	return v.lastValue
+}
+func NewReturnVal(lastValue RuntimeVal) ReturnVal {
+	return ReturnVal{lastValue: lastValue}
 }

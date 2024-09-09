@@ -30,5 +30,4 @@ cho tổng = hàm (số1, số2, số3) {
 
 cho d = tổng(a,b,c)
 in("Chào thế giới")
-in(d) ; kết quả cuối là 32
-d ; trả kết quả dùng để kiểm tra
+in(a,b,c,d) ; kết quả cuối của 'd' là 32

@@ -138,6 +138,28 @@ func TestAnonFunctionDeclareAndCall(t *testing.T) {
 	assert.Equal(t, main.VaIntVal, result.Kind())
 }
 
+func TestFunctionCallReturn(t *testing.T) {
+	scope := main.NewScope(nil)
+	parser := main.NewParser()
+	code := `
+	fn increase(a) {
+		while a < 100 {
+			a = a + 1
+			if a == 50 {
+				a
+				return
+			}
+		}
+	}
+	let a = 1
+	increase(a)
+	`
+	program := parser.CreateAST(code)
+	result := main.Eval(program, scope)
+	assert.Equal(t, 50, result.Value())
+	assert.Equal(t, main.VaIntVal, result.Kind())
+}
+
 func TestConditionalStatement(t *testing.T) {
 	scope := main.NewGlobalScope()
 	parser := main.NewParser()
@@ -151,7 +173,7 @@ func TestConditionalStatement(t *testing.T) {
 		a = 2
 	}
 
-	let b = if 0 == 0 {
+	let b = if 1-1 == 2-2 {
 		b = 10
 	} else {
 		b = 20
@@ -189,6 +211,23 @@ func TestWhileLoop(t *testing.T) {
 	assert.Equal(t, main.VaIntVal, result.Kind())
 }
 
+func TestWhileLoopBreak(t *testing.T) {
+	scope := main.NewScope(nil)
+	parser := main.NewParser()
+	code := `
+	let a = 1
+	while a != 100 {
+		a = a + 1
+		if a == 50 { break }
+	}
+	a
+	`
+	program := parser.CreateAST(code)
+	result := main.Eval(program, scope)
+	assert.Equal(t, 50, result.Value())
+	assert.Equal(t, main.VaIntVal, result.Kind())
+}
+
 func TestArray(t *testing.T) {
 	scope := main.NewGlobalScope()
 	parser := main.NewParser()
@@ -201,25 +240,25 @@ func TestArray(t *testing.T) {
 }
 
 func TestVietnamese(t *testing.T) {
-	scope := main.NewScope(nil)
+	scope := main.NewGlobalScope()
 	parser := main.NewParser()
 	code, err := os.ReadFile("./sample/chao.blu")
 	assert.NoError(t, err)
 	program := parser.CreateAST(string(code))
 	result := main.Eval(program, scope)
-	assert.Equal(t, 32, result.Value())
-	assert.Equal(t, main.VaIntVal, result.Kind())
+	assert.Equal(t, []main.RuntimeVal{main.NewIntVal(12), main.NewIntVal(10), main.NewIntVal(10), main.NewIntVal(32)}, result.Value())
+	assert.Equal(t, main.VaArrayVal, result.Kind())
 }
 
 func TestEnglish(t *testing.T) {
-	scope := main.NewScope(nil)
+	scope := main.NewGlobalScope()
 	parser := main.NewParser()
 	code, err := os.ReadFile("./sample/hello.blu")
 	assert.NoError(t, err)
 	program := parser.CreateAST(string(code))
 	result := main.Eval(program, scope)
-	assert.Equal(t, 32, result.Value())
-	assert.Equal(t, main.VaIntVal, result.Kind())
+	assert.Equal(t, []main.RuntimeVal{main.NewIntVal(12), main.NewIntVal(10), main.NewIntVal(10), main.NewIntVal(32)}, result.Value())
+	assert.Equal(t, main.VaArrayVal, result.Kind())
 }
 
 func TestFibonacciRecursion(t *testing.T) {

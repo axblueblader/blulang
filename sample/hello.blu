@@ -30,5 +30,4 @@ let sum = fn (num1, num2, num3) {
 
 let d = sum(a,b,c)
 print("Hello world")
-print(d) ; final result is 32
-d
+print(a,b,c,d) ; final result of 'd' is 32
