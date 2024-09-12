@@ -4,7 +4,7 @@ import (
 	"unicode"
 )
 
-type TokenType int
+type TokenType string
 
 type Token struct {
 	name  TokenType
@@ -12,26 +12,26 @@ type Token struct {
 }
 
 const (
-	TkBinaryOperator = iota
-	TkNumber
-	TkString
-	TkIdentifier
-	TkDeclareVar
-	TkDeclareFunc
-	TkIf
-	TkElse
-	TkWhile
-	TkReturn
-	TkBreak
-	TkComma
-	TkDot
-	TkNot
-	TkOpenRound
-	TkCloseRound
-	TkOpenCurly
-	TkCloseCurly
-	TKOpenSquare
-	TkCloseSquare
+	TkBinaryOperator TokenType = "BinaryOperator"
+	TkNumber         TokenType = "Number"
+	TkString         TokenType = "String"
+	TkIdentifier     TokenType = "Identifier"
+	TkDeclareVar     TokenType = "DeclareVariable"
+	TkDeclareFunc    TokenType = "DeclareFunction"
+	TkIf             TokenType = "If"
+	TkElse           TokenType = "Else"
+	TkWhile          TokenType = "While"
+	TkReturn         TokenType = "Return"
+	TkBreak          TokenType = "Break"
+	TkComma          TokenType = "Comma"
+	TkDot            TokenType = "Dot"
+	TkNot            TokenType = "Not"
+	TkOpenRound      TokenType = "OpenRoundBrace"
+	TkCloseRound     TokenType = "CloseRoundBrace"
+	TkOpenCurly      TokenType = "OpenCurlyBrace"
+	TkCloseCurly     TokenType = "CloseCurlyBrace"
+	TKOpenSquare     TokenType = "OpenSquareBrace"
+	TkCloseSquare    TokenType = "CloseSquareBrace"
 )
 
 var Keywords = map[string]TokenType{
