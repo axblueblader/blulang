@@ -12,6 +12,7 @@ const (
 	VaNativeFuncVal ValueType = "NativeFuncVal"
 	VaBreakVal      ValueType = "BreakVal"
 	VaReturnVal     ValueType = "ReturnVal"
+	VaObjectVal     ValueType = "ObjectVal"
 )
 
 type RuntimeVal interface {
@@ -160,4 +161,20 @@ func (v ReturnVal) Value() any {
 }
 func NewReturnVal(lastValue RuntimeVal) ReturnVal {
 	return ReturnVal{lastValue: lastValue}
+}
+
+type ObjectVal struct {
+	properties *Scope
+}
+
+func (v ObjectVal) Kind() ValueType {
+	return VaObjectVal
+}
+
+func (v ObjectVal) Value() any {
+	return v.properties.variables
+}
+
+func NewObjectVal(props *Scope) ObjectVal {
+	return ObjectVal{properties: props}
 }

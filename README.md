@@ -73,6 +73,7 @@ in(fiboEnglish(6) + fiboViệt(7)) ; kết quả là 21
 | Array usage           | arr[2] = 3, arr = arr + [4]                                                                         |
 | Array element count   | count(arr)                                                                                          |
 | Comment               | from ';' to end of line e.g ```; this is a comment```                                               |
+| Object                | let body = { head: { eyes: 2, nose: 1}, torso: 1}                                                   |
 
 **Important note** is that all construct returns the last statement's value so these syntax are allowed
 ```

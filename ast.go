@@ -18,6 +18,8 @@ const (
 	StmtReturn          StmtType = "ReturnStmt"
 	StmtArrayLiteral    StmtType = "ArrayLiteral"
 	StmtArrayAccessExpr StmtType = "ArrayAccessExpr"
+	StmtObjDeclareExpr  StmtType = "ObjectDeclareExpr"
+	StmtObjAccessExpr   StmtType = "ObjectAccessExpr"
 )
 
 type Statement interface {
@@ -223,4 +225,27 @@ func (a ArrayAccessExpr) Kind() StmtType {
 
 func NewArrayAccessExpr(name string, index Expression) ArrayAccessExpr {
 	return ArrayAccessExpr{name: name, index: index}
+}
+
+type ObjectDeclareExpr struct {
+	props map[string]Expression
+}
+
+func (e ObjectDeclareExpr) Kind() StmtType {
+	return StmtObjDeclareExpr
+}
+
+func NewObjectDeclareExpr(props map[string]Expression) ObjectDeclareExpr {
+	return ObjectDeclareExpr{props: props}
+}
+
+type ObjectAccessExpr struct {
+	owner    Identifier
+	property Expression
+}
+
+func (e ObjectAccessExpr) Kind() StmtType { return StmtObjAccessExpr }
+
+func NewObjectAccessExpr(owner Identifier, property Expression) ObjectAccessExpr {
+	return ObjectAccessExpr{owner: owner, property: property}
 }

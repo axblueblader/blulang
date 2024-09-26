@@ -59,6 +59,9 @@ func (p *Parser) parseStatement() Statement {
 }
 
 func (p *Parser) parseExpression() Expression {
+	if p.peek().name == TkOpenCurly {
+		return p.parseObjectDeclarationExpression()
+	}
 	if p.peek().name == TkDeclareVar {
 		return p.parseVariableDeclarationExpression()
 	}
@@ -166,7 +169,7 @@ func (p *Parser) parseFunctionDeclarationExpression() Expression {
 	return NewFuncDeclareExpression(functionName, arguments, statements)
 }
 
-func (p *Parser) parseIdentifierOrFunctionCallExpression() Expression {
+func (p *Parser) parseIdentifierBasedExpression() Expression {
 	// parse function call
 	if p.peekNext().name == TkOpenRound {
 		funcName := p.peek().value
@@ -196,6 +199,7 @@ func (p *Parser) parseIdentifierOrFunctionCallExpression() Expression {
 	}
 	// parse property access
 	if p.peekNext().name == TkDot {
+		return p.parseObjectAccessExpression()
 	}
 	identifierName := p.peek().value
 	p.pop()
@@ -278,6 +282,32 @@ func (p *Parser) parseNotExpression() Expression {
 	return NewBinaryExpression(expression, NewIdentifier("true"), "!=")
 }
 
+func (p *Parser) parseObjectDeclarationExpression() Expression {
+	p.pop() // pop {
+	props := make(map[string]Expression)
+	// parse { key1: val1, key2: val2}
+	for p.peek().name != TkCloseCurly {
+		name := p.peek().value
+		p.pop()
+		p.pop() // pop :
+		expr := p.parseExpression()
+		props[name] = expr
+		if p.peek().name == TkComma {
+			p.pop()
+		}
+	}
+	p.pop() // pop }
+	return NewObjectDeclareExpr(props)
+}
+
+func (p *Parser) parseObjectAccessExpression() Expression {
+	identifier := p.peek().value
+	p.pop() // pop owner
+	p.pop() // pop .
+	expr := p.parseIdentifierBasedExpression()
+	return NewObjectAccessExpr(NewIdentifier(identifier), expr)
+}
+
 func (p *Parser) parsePrimaryExpression() Expression {
 	token := p.peek()
 	switch token.name {
@@ -297,7 +327,7 @@ func (p *Parser) parsePrimaryExpression() Expression {
 	case TkNot:
 		return p.parseNotExpression()
 	case TkIdentifier:
-		return p.parseIdentifierOrFunctionCallExpression()
+		return p.parseIdentifierBasedExpression()
 	case TKOpenSquare:
 		return p.parseArrayExpression()
 	case TkOpenRound:

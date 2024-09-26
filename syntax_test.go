@@ -271,3 +271,14 @@ func TestFibonacciRecursion(t *testing.T) {
 	assert.Equal(t, 21, result.Value())
 	assert.Equal(t, main.VaIntVal, result.Kind())
 }
+
+func TestObject(t *testing.T) {
+	scope := main.NewScope(nil)
+	parser := main.NewParser()
+	code, err := os.ReadFile("./sample/object.blu")
+	assert.NoError(t, err)
+	program := parser.CreateAST(string(code))
+	result := main.Eval(program, scope)
+	assert.Equal(t, 66, result.Value())
+	assert.Equal(t, main.VaIntVal, result.Kind())
+}
