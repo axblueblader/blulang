@@ -30,11 +30,29 @@ func Eval(statement Statement, scope *Scope) RuntimeVal {
 		return EvalConditionalExpression(statement.(ConditionalExpression), scope)
 	case StmtWhileLoopExpr:
 		return EvalWhileLoopExpression(statement.(WhileLoopExpression), scope)
+	case StmtObjDeclareExpr:
+		return EvalObjectDeclareExpression(statement.(ObjectDeclareExpr), scope)
+	case StmtObjAccessExpr:
+		return EvalObjectAccessExpression(statement.(ObjectAccessExpr), scope)
 	case StmtNullLiteral:
 		return NullVal{}
 	}
 	log.Panicf("Invalid statement: %v", statement)
 	return nil
+}
+
+func EvalObjectAccessExpression(objAccess ObjectAccessExpr, scope *Scope) RuntimeVal {
+	ownerName := objAccess.owner.name
+	owningObj := scope.GetVarVal(ownerName)
+	return Eval(objAccess.property, owningObj.(ObjectVal).properties)
+}
+
+func EvalObjectDeclareExpression(objDeclare ObjectDeclareExpr, scope *Scope) RuntimeVal {
+	objProps := NewScope(nil)
+	for name, expr := range objDeclare.props {
+		objProps.DeclareVar(name, Eval(expr, scope))
+	}
+	return NewObjectVal(objProps)
 }
 
 func EvalArrayAccessExpression(expr ArrayAccessExpr, scope *Scope) RuntimeVal {

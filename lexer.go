@@ -24,6 +24,7 @@ const (
 	TkReturn         TokenType = "Return"
 	TkBreak          TokenType = "Break"
 	TkComma          TokenType = "Comma"
+	TKColon          TokenType = "Colon"
 	TkDot            TokenType = "Dot"
 	TkNot            TokenType = "Not"
 	TkOpenRound      TokenType = "OpenRoundBrace"
@@ -145,6 +146,10 @@ func Tokenize(source string) []Token {
 		}
 		if ch == ',' {
 			tokens = append(tokens, NewToken(TkComma, string(ch)))
+			continue
+		}
+		if ch == ':' {
+			tokens = append(tokens, NewToken(TKColon, string(ch)))
 			continue
 		}
 		if ch == '.' {
